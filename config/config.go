@@ -1,26 +1,24 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/sethdmoore/execpy/globals"
-	"os"
+	"fmt"
 )
 
 type Config struct {
 	Binary          string
 	Token           string
-	AuthorizedUsers []string
+	AuthorizedUsers []int
 	Timeout         int
 }
 
-var c Config
 
-func init() {
-	err := envconfig.Process(globals.AppPrefix, &c)
+func New(prefix string) (*Config, error) {
+	var c Config
+	err := envconfig.Process(prefix, &c)
 	if err != nil {
-		fmt.Printf("Error processing prefix %s, %s", globals.AppPrefix, err)
-		os.Exit(2)
+		return nil, errors.New(fmt.Sprintf("Error processing prefix %s, %s", prefix, err))
 	}
 
 	if len(c.Binary) == 0 {
@@ -29,8 +27,5 @@ func init() {
 	if c.Timeout == 0 {
 		c.Timeout = 10
 	}
-}
-
-func Get() *Config {
-	return &c
+	return &c, nil
 }
