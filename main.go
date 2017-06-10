@@ -3,8 +3,8 @@ package main
 import (
 	//"github.com/davecgh/go-spew/spew"
 	"bytes"
-	"fmt"
 	"errors"
+	"fmt"
 	"github.com/sethdmoore/execpy/config"
 	"github.com/sethdmoore/execpy/globals"
 	"github.com/tucnak/telebot"
@@ -15,14 +15,13 @@ import (
 	"time"
 )
 
-func trimString(s string, length int, maxlength int) string{
-	if len(s) <= max {
+func trimString(s string, length int, maxlength int) string {
+	if len(s) <= maxlength {
 		return s
 	}
 
-	return s[:
+	return s
 }
-
 
 func isAuthorized(id int, list *[]int) bool {
 	// no authorized users means all users are authorized
@@ -132,7 +131,7 @@ func messages(c *config.Config, bot *telebot.Bot) {
 
 		if message.Text == "/start" {
 			bot.SendMessage(message.Chat,
-				"You have activated, " + message.Sender.FirstName + "!", nil)
+				"You have activated, "+message.Sender.FirstName+"!", nil)
 		} else {
 
 		}
@@ -146,7 +145,7 @@ func messages(c *config.Config, bot *telebot.Bot) {
 
 func processQuery(c *config.Config, query telebot.Query, bot *telebot.Bot) {
 	var title string
-	var desc string
+	//var desc string
 	var output string
 
 	result, err := evalScript(c, &query.Text)
@@ -164,10 +163,9 @@ func processQuery(c *config.Config, query telebot.Query, bot *telebot.Bot) {
 		//preview := "Execution"
 	}
 
-
 	article := &telebot.InlineQueryResultArticle{
-		Title: title,
-		Description:    "foo...",
+		Title:       title,
+		Description: "foo...",
 		//URL:   "http://google.com",
 		InputMessageContent: &telebot.InputTextMessageContent{
 			Text:           output,
@@ -209,7 +207,6 @@ func main() {
 	if len(c.AuthorizedUsers) == 0 {
 		log.Printf("Warning: No authorized users specified. This makes the bot open to the world (dangerous)")
 	}
-
 
 	bot, err := telebot.NewBot(c.Token)
 	if err != nil {
